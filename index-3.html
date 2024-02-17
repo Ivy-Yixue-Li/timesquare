@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>拟画</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+    <style>
+
+        body {
+        background-color: black;
+        }
+
+        #playButton {
+            position: fixed; /* Use fixed positioning */
+            top: 50%; /* Center vertically */
+            left: 50%; /* Center horizontally */
+            transform: translate(-50%, -50%); /* Adjust position to the exact center */
+            padding: 1vw; /* Use viewport width for dynamic padding */
+            font-size:20vw; /* Dynamically adjust font size based on viewport width */
+            background-color: black; /* Button color */
+            color: white; /* Text color */
+            border: none;
+            border-radius: 10px; /* Rounded corners */
+            cursor: pointer; /* Change cursor on hover */
+            z-index: 5; /* Ensure it's above other elements but below overlays if necessary */
+            font-family: "Roboto Mono", monospace;
+            font-optical-sizing: auto;
+            font-weight: 400;
+            font-style: normal;
+            letter-spacing: auto;
+            line-height: 100%;
+        }
+ 
+        #playButton:hover {
+            opacity: 0.8; /* Example: Slight fade on hover */
+            font-style: italic;
+        }
+
+        /* Ensures the video container covers the full viewport */
+        .video-container {
+            position: fixed; /* Use fixed to keep it in view at all times */
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            display: flex; /* Use flexbox to center the iframe */
+            justify-content: center; /* Center horizontally */
+            align-items: center; /* Center vertically */
+        }
+    
+        /* Makes the iframe responsive and covers the available space */
+        .video-container iframe {
+            width: 100vw;
+            height: 100vh;
+            border: 0; 
+            pointer-events: none;
+        }
+        /* Gradient at the bottom */
+        .gradient-container {
+            display: none; /* Initially hidden */
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 20%; /* Adjust based on your preference */
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+            z-index: 2; /* Ensure it's above the video */
+            justify-content: center; /* Center controls horizontally */
+            align-items: center; /* Center controls vertically */
+        }
+
+        /* Placeholder for UI controls */
+        .control {
+            width: auto; /* Adjust size as needed */
+            height: auto; /* Adjust size as needed */
+            background-color: white; /* Visible color for demonstration */
+            margin: 0 40px; /* Space between controls */
+            /* Add more styling as needed */
+            cursor: pointer;
+            font-size:40px; /* Dynamically adjust font size based on viewport width */
+            padding: 10px 40px;
+            color: black; /* Text color */
+            border: 3px solid white;
+            border-radius: 100px; /* Rounded corners */
+            cursor: pointer; /* Change cursor on hover */
+            z-index: 5; /* Ensure it's above other elements but below overlays if necessary */
+            font-family: "Roboto Mono", monospace;
+            font-optical-sizing: auto;
+            font-weight: 400;
+            font-style: normal;
+            letter-spacing: -5%;
+            display: flex; /* Center content */
+            justify-content: center; /* Horizontally center */
+            align-items: center; /* Vertically center */
+        }
+
+        .control:hover, .control:focus {
+            background-color: #f0f0f0; /* Slightly darker on hover/focus */
+            outline: none; /* Remove default focus outline */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2); /* More pronounced shadow on hover/focus */
+        }
+
+        .center-container {
+            /* This container can be flex itself if you need to center something within */
+            display: flex;
+            justify-content: center;
+            flex-grow: 1; /* This ensures it takes up the available space, aiding in centering */
+        }
+        /* Full-screen overlay */
+        #textSection {
+            position: fixed; /* Overlay position */
+            top: 0;
+            left: 0;
+            width: 100vw; /* Full viewport width */
+            height: 100vh; /* Full viewport height */
+            background-color: rgba(0, 0, 0, 0.9); /* Black with transparency */
+            color: white; /* Text color */
+            display: flex; /* Use flexbox for centering */
+            justify-content: center; /* Center horizontally */
+            align-items: center; /* Center vertically */
+            text-align: left;
+            z-index: 10; /* Ensure it's on top */
+            display: none; /* Initially hidden */
+            flex-direction: column; /* Stack content vertically */
+            justify-content: center; /* Center content vertically */
+            align-items: center; /* Center content horizontally */
+            text-align: center; /* Center text alignment */
+            padding: 20px; /* Add padding around the content */
+            box-sizing: border-box; /* Include padding in the element's total width and height */
+            overflow-y: auto; /* Enable scrolling for overflow content */
+            z-index: 10; /* Ensure it's on top */
+                }
+
+            #textSection p {
+            font-family: sans-serif;
+            font-size: 20px; /* Adjust font size */
+            line-height: 1.6; /* Adjust line height for readability */
+            margin-bottom: 20px; /* Space between paragraphs */
+            }
+        /* Close button */
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: #fff; /* White text */
+            border: none; /* No border */
+            padding: 10px 20px; /* Padding */
+            cursor: pointer; /* Pointer cursor */
+            width: auto; /* Adjust size as needed */
+            height: auto; /* Adjust size as needed */
+            background-color: white; /* Visible color for demonstration */
+            /* Add more styling as needed */
+            cursor: pointer;
+            font-size:40px; /* Dynamically adjust font size based on viewport width */
+            padding: 10px 40px;
+            color: black; /* Text color */
+            border: 3px solid white;
+            border-radius: 100px; /* Rounded corners */
+            cursor: pointer; /* Change cursor on hover */
+            z-index: 5; /* Ensure it's above other elements but below overlays if necessary */
+            font-family: "Roboto Mono", monospace;
+            font-optical-sizing: auto;
+            font-weight: 400;
+            font-style: normal;
+            letter-spacing: -5%;
+            display: flex; /* Center content */
+            justify-content: center; /* Horizontally center */
+            align-items: center; /* Vertically center */
+        }
+
+        .close-btn:hover, .close-btn:focus {
+            background-color: #f0f0f0; /* Slightly darker on hover/focus */
+            outline: none; /* Remove default focus outline */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2); /* More pronounced shadow on hover/focus */
+        }
+    </style>
+    <script src="https://www.youtube.com/iframe_api"></script>
+</head>
+<body>
+
+    <button id="playButton">拟画Play</button>
+    <div id="player" style="display:none;"></div>
+    <audio id="myAudio" src="sounds/ZOOM0016.mp3" autoplay loop> </audio> 
+
+    <!-- Gradient and controls -->
+    <div class="gradient-container">
+        <button id="playPauseButton" class="control">Pause</button>
+        <div class="center-container"><button id="refreshVideoButton" class="control">Load video</button></div>
+        <button id="displayText" class="control">Project info</button>
+    </div>
+
+    <!-- New hidden section for text -->
+    <div id="textSection" style="display: none; text-align: center;">
+        <button class="close-btn">Close</button>
+        <p>我们的大脑似乎能轻易构建起声音和画面之间的联系。电影制作中的拟声音效就是最好的佐证：我们善于将眼前的画面和那些与之同时发生的、似是而非的声音建立起对应关系。这种能力使我们能够将来自不同感官的信息整合在一起，形成完整的感知体验。
+        如果说田野录音&同期声这种在场和具身的行为强化了现场声画之间的统一性，那么在裂声症时代，在声音失去它的原始环境的时候，我们常常需要对声音和画面之间的关系进行一种（或被动或主动的）主观脑补。
+            当技术进步使得声音的后期制作更加容易，当音轨可以轻易地在音视频制作软件时间轴上被编辑和拖拽，是否声音的矫饰已经成为习惯，而原始聆听已经成为奢望？
+            当我们带着耳机走在路上，耳机内外的声音混合在一起，形成了一种新的声音景观，哪个部分才是真实的声音事件和声音现场？
+            在观看网络视频时，有时会因为帧率的问题出现音画不同步的现象。 带着小小的违和感，我们的大脑开始地填补那一点点不同步的时间差，直到声画之间的差异被我们忽视和消弭。
+            在以上种种情况下，我们的大脑热衷于根据自己的经验和想象来构建声音和画面之间的关系，而这种关系的真实性和准确性似乎有待商榷。
+            我并非在此鼓吹一种对“真实”或“准确”的追求。
+            对于有幸能同时听见和看见世界的人来说，我们所要面对的是两种截然不同的声画关系：
+            聆听现场时，声音被眼前之所见具像化，一切都是精确的、必然的、一一对应的。
+            聆听录音时，声音包含了大量的回忆、想象、猜测，模糊的画面在脑中形成。
+            正如电影中的拟声音效对固定的画面佐以似是而非的声音，假使我们对固定的声音佐以一种似是而非的画面 （此处暂且将这种行为称为拟画），我们是否能骗过我们的大脑，给声音赋予具体的视觉符号，强行而不动声色地构建出一种虚构的声画关系？
+            在这个项目中，我选取了三段录制于不同地点的声音，它们分别来自：
+            纽约时代广场，
+            香港士美菲路街市及熟食中心，
+            和重庆家庭牌桌。
+            我抓取了网络上世界各地处于城市中心、食品市场、和家庭场景的视频，并对应在这三段音频上。每刷新一次页面都会抓取新的视频来搭配这些声音。
+            或许在全球化的背景下，这些人们赖以生存的场景越来越趋同，而我们虚构的声画关系趋近于合理，甚至并不引起观者的疑心。
+            而当声画相悖到什么程度，它们之间的虚构关系会被识破？是否那些被识破的时刻，那些声音中的语言、场景、疏密程度同画面明显不同的时刻，正向我们昭示了某地的独特声景？
+            当同一段声音被赋予不同的画面，是否那些貌似合理的声画会不被察觉地掠过，仿佛那声音正温顺地为视觉而服务；而相左的声画则会突兀地从背景跳跃到前景，显得怪异、混乱、失去逻辑，使我们的听觉短暂地抢夺过视觉主导的霸权？</p>
+    </div>
+    
+    <script>
+    // Define a global variable for the player
+        var player;
+
+    // Array of pre-selected YouTube video IDs
+        var preSelectedVideos = [
+        'bJcuifEu0Ro', // Ensure only the video ID is included
+    'EB2_-VEf8QY',
+    'HRg1gJi6yqc',
+    '15dL2GL78SM',
+    'SnP3qTb-bnk',
+    'a1LwHVeRr3w',
+    'ArFBhx_0K7U',
+    'MMbqlqKFHgE',
+    'aEzcC6U8VKs',
+    'N-K2qU9OZBM',
+    '0PLN3PfIOT8',
+        ];  
+        
+    // Function to generate a random integer between min and max (inclusive)
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+    // Load a random YouTube video based on the search query using Iframe API
+        function loadRandomVideo() {
+        var randomIndex = getRandomInt(0, preSelectedVideos.length - 1);
+        var videoId = preSelectedVideos[randomIndex];
+
+        // Check if player is already defined, if so, load new video ID
+        if (player) {
+            player.loadVideoById(videoId);
+        } else {
+            // Initialize the YouTube player
+            player = new YT.Player('player', {
+                height: '100%',
+                width: '100%',
+                videoId: videoId,
+                playerVars: {
+                    'autoplay': 1,
+                    'mute': 1,
+                    'controls': 0
+                },
+                events: {
+                    'onReady': onPlayerReady,
+                }
+            });
+        }
+
+        document.getElementById('myAudio').play();
+        document.querySelector('.gradient-container').style.display = 'flex';
+    }
+
+        function onPlayerReady(event) {
+            event.target.playVideo();
+        }
+
+    // Load a random video when button is clicked
+        document.getElementById('playButton').addEventListener('click', function() {
+            this.style.display = 'none'; // Hide play button
+
+            // Add video-container class dynamically
+            var playerDiv = document.getElementById('player');
+            playerDiv.style.display = 'block'; // Show the video player
+            playerDiv.parentNode.className += "video-container"; // Ensure the parent has the video-container class
+    
+            loadRandomVideo(); // Load and play the video and audio
+        });
+
+    // Video UI: play/pause
+        document.getElementById('playPauseButton').addEventListener('click', function() {
+        var button = this; // Reference to the button
+        if (player && typeof player.getPlayerState === 'function') {
+            var playerState = player.getPlayerState();
+            var audio = document.getElementById('myAudio');
+
+            // YouTube Player states: 1 means playing, 2 means paused
+            if (playerState === 1) {
+                // Video is playing, so pause it
+                player.pauseVideo();
+                audio.pause();
+                button.textContent = "Play";
+            } else {
+                // Video is paused, so play it
+                player.playVideo();
+                audio.play();
+                button.textContent = "Pause";
+            }
+        }
+    });
+
+    // Function to set random audio time
+function setRandomAudioTime(audioElement) {
+    if (audioElement.duration > 0) {
+        var randomTime = Math.random() * audioElement.duration;
+        audioElement.currentTime = randomTime;
+        audioElement.play();
+    }
+}
+
+// Event listener for the refresh video button
+document.getElementById('refreshVideoButton').addEventListener('click', function() {
+    console.log("Load Video button clicked."); // Debugging log
+
+    loadRandomVideo(); // Load a new random video
+
+    var audio = document.getElementById('myAudio');
+    // Check if audio metadata is already loaded
+    if (audio.readyState >= 1) {
+        setRandomAudioTime(audio);
+        console.log("Audio time set."); // Debugging log
+    } else {
+        // Wait for metadata to load before setting random audio time
+        audio.addEventListener('loadedmetadata', function() {
+            setRandomAudioTime(audio);
+            console.log("Audio time set after metadata loaded."); // Debugging log
+        }, { once: true });
+    }
+});
+
+
+    // Video UI: 
+        document.getElementById('displayText').addEventListener('click', function() {
+        var textSection = document.getElementById('textSection');
+        textSection.style.display = 'flex'; // Show the overlay as a flex container
+    });
+
+    // Close button functionality
+    document.querySelector('.close-btn').addEventListener('click', function() {
+        document.getElementById('textSection').style.display = 'none'; // Hide the overlay
+    });
+
+
+
+    </script>
+</body>
+</html>
